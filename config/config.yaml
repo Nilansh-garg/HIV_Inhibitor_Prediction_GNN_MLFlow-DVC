@@ -12,3 +12,10 @@ data_transformation:
   train_file: artifacts/data_transformation/train.csv
   test_file: artifacts/data_transformation/test.csv
 
+data_preparation:
+  root_dir: artifacts/data_preparation
+  train_csv_path: artifacts/data_transformation/train.csv
+  test_csv_path: artifacts/data_transformation/test.csv
+  train_graph_dir: artifacts/data_preparation/train_graphs
+  test_graph_dir: artifacts/data_preparation/test_graphs
+

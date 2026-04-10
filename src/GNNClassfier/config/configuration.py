@@ -1,6 +1,6 @@
 from src.GNNClassfier.constants import *
 from src.GNNClassfier.utils.common import read_yaml, create_directories
-from src.GNNClassfier.entity import DataIngestionConfig, DataTransformationConfig, DataPreparationConfig
+from src.GNNClassfier.entity.config_entity import DataIngestionConfig, DataTransformationConfig, DataPreparationConfig
 
 class ConfigurationManager:
     def __init__(self, config_file_path: Path = CONFIG_FILE_PATH, params_file_path: Path = PARAMS_FILE_PATH):

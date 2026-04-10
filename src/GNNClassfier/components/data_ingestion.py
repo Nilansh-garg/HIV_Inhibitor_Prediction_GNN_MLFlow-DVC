@@ -19,7 +19,7 @@ class DataIngestion:
             logger.info(f"downloading data from {dataset_url} into file {zip_download_dir}")
             
             file_id = dataset_url.split('/')[-2]
-            gdown.download(id=file_id, output=zip_download_dir)
+            gdown.download(id=file_id, output=str(zip_download_dir))
             size = get_size(Path(zip_download_dir))
             logger.info(f"file downloaded successfully and saved at {zip_download_dir} with size {size}")
             return zip_download_dir
