@@ -23,5 +23,5 @@ stages:
       - artifacts/data_transformation/train.csv
       - artifacts/data_transformation/test.csv
     outs:
-      - artifacts/data_preparation/train/processed
-      - artifacts/data_preparation/test/processed
+      - artifacts/data_preparation/train_graphs
+      - artifacts/data_preparation/test_graphs
