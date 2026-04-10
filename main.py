@@ -3,35 +3,18 @@ from src.GNNClassfier.pipeline.stage_01_data_ingestion import DataIngestionTrain
 from src.GNNClassfier.pipeline.stage_02_data_transformation import DataTransformationTrainingPipeline
 from src.GNNClassfier.pipeline.stage_03_dataset_preparation import DatasetPreparationPipeline
 
-# Stage 1: Data Ingestion
-STAGE_NAME = "Data Ingestion stage"
-try:
-   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
-   data_ingestion = DataIngestionTrainingPipeline()
-   data_ingestion.main()
-   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
-except Exception as e:
-        logger.exception(e)
-        raise e
+# Executing sequentially to ensure all artifacts are generated correctly
+stages = [
+    ("Data Ingestion", DataIngestionTrainingPipeline()),
+    ("Data Transformation", DataTransformationTrainingPipeline()),
+    ("Dataset Preparation", DatasetPreparationPipeline())
+]
 
-# Stage 2: Data Transformation
-STAGE_NAME = "Data Transformation stage"
-try:
-   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
-   data_transformation = DataTransformationTrainingPipeline()
-   data_transformation.main()
-   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
-except Exception as e:
-        logger.exception(e)
-        raise e
-
-# Stage 3: Dataset Preparation (Graph Creation)
-STAGE_NAME = "Dataset Preparation stage"
-try:
-   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
-   dataset_preparation = DatasetPreparationPipeline()
-   dataset_preparation.main()
-   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
-except Exception as e:
-        logger.exception(e)
+for stage_name, pipeline in stages:
+    try:
+        logger.info(f">>>>>> stage {stage_name} started <<<<<<")
+        pipeline.main()
+        logger.info(f">>>>>> stage {stage_name} completed <<<<<<\n\nx==========x")
+    except Exception as e:
+        logger.exception(f"Error in {stage_name}: {str(e)}")
         raise e
