@@ -46,3 +46,12 @@ class TrainingConfig:
     params_batch_size: int
     params_learning_rate: float
 
+@dataclass(frozen=True)
+class EvaluationConfig:
+    path_of_model: Path
+    training_data: Path  # Path to your processed dataset
+    all_params: dict
+    mlflow_uri: str
+    params_batch_size: int
+    params_device: str
+

@@ -59,8 +59,20 @@ stages:
       - EMBEDDING_SIZE
       - CLASSES
     outs:
-      - artifacts/training/model.pth
+      - artifacts/training/model.pt
 
+  evaluation:
+    cmd: python src/GNNClassfier/pipeline/stage_06_model_Evaluation.py
+    deps:
+      - src/GNNClassfier/pipeline/stage_06_model_Evaluation.py
+      - config/config.yaml
+      - params.yaml
+      - artifacts/data_preparation/test_graphs
+      - artifacts/training/model.pt
+    params:
+      - BATCH_SIZE
+    outs:
+      - artifacts/evaluation/scores.json
 
 
 

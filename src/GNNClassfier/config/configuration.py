@@ -1,10 +1,12 @@
+import torch
 from src.GNNClassfier.constants import *
 from src.GNNClassfier.utils.common import read_yaml, create_directories
 from src.GNNClassfier.entity.config_entity import (DataIngestionConfig,
                                                    DataTransformationConfig,
                                                    DataPreparationConfig,
                                                    PrepareBaseModelConfig,
-                                                   TrainingConfig)
+                                                   TrainingConfig,
+                                                   EvaluationConfig)
 
 class ConfigurationManager:
     def __init__(self, config_file_path: Path = CONFIG_FILE_PATH, params_file_path: Path = PARAMS_FILE_PATH):
@@ -74,3 +76,14 @@ class ConfigurationManager:
             params_learning_rate = self.params.LEARNING_RATE
         )
         return training_config
+    
+    def get_evaluation_config(self) -> EvaluationConfig:
+        eval_config = EvaluationConfig(
+            path_of_model= Path(self.config.training.trained_model_path),
+            training_data=Path(self.config.data_transformation.test_data),
+            mlflow_uri=str(self.config.evaluation.mlflow_uri),
+            all_params=self.params,
+            params_batch_size=self.params.BATCH_SIZE,
+            params_device="cuda" if torch.cuda.is_available() else "cpu"
+        )
+        return eval_config
