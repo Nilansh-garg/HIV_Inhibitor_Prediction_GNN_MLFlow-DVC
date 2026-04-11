@@ -26,4 +26,6 @@ prepare_base_model:
 training:
   root_dir: artifacts/training
   trained_model_path: artifacts/training/model.pth
+  training_data_path: artifacts/data_preparation/train_graphs/processed/
+  test_data_path: artifacts/data_preparation/test_graphs/processed/
 

@@ -65,10 +65,10 @@ class ConfigurationManager:
     def get_training_config(self) -> TrainingConfig:
         training_config = TrainingConfig(
             root_dir = self.config.artifacts_root,
-            trained_model_path = self.config.trained_model_path,
-            base_model_path = self.config.base_model_path,
-            training_data_path = self.config.training_data_path,
-            test_data_path = self.config.test_data_path,
+            trained_model_path = self.config.training.trained_model_path,
+            base_model_path = self.config.prepare_base_model.base_model_path,
+            training_data_path = self.config.training.training_data_path,
+            test_data_path = self.config.training.test_data_path,
             params_epochs = self.params.EPOCHS,
             params_batch_size = self.params.BATCH_SIZE,
             params_learning_rate = self.params.LEARNING_RATE
