@@ -25,3 +25,24 @@ class DataPreparationConfig:
     train_graph_dir: Path
     test_graph_dir: Path
     
+
+@dataclass(frozen=True)
+class PrepareBaseModelConfig:
+    root_dir: Path
+    base_model_path: Path
+    params_features_size: int
+    params_embedding_size: int
+    params_num_classes: int
+
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    root_dir: Path
+    trained_model_path: Path
+    base_model_path: Path
+    training_data_path: Path
+    test_data_path: Path
+    params_epochs: int
+    params_batch_size: int
+    params_learning_rate: float
+
