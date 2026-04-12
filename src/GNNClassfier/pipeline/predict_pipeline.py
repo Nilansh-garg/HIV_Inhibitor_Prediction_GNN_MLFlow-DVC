@@ -5,13 +5,23 @@ from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import rdmolops
 from torch_geometric.data import Data
+from src.GNNClassfier.components.prepare_model import GNN
 
 class PredictionPipeline:
     def __init__(self, model_path: str):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         # Load the entire model object as per your Training_model.ipynb logic
-        self.model = torch.load(model_path, map_location=self.device, weights_only=False)
+        self.model = GNN(
+            features_size=6,     # Based on your atom feature logic
+            embedding_size=1024,    # Default from your config
+            num_classes=2         # Binary classification
+        )
+        
+        state_dict = torch.load(model_path, map_location=self.device)
+        self.model.load_state_dict(state_dict)
+        self.model.to(self.device)
         self.model.eval()
+
 
     def _get_node_features(self, mol):
         all_node_features = []
