@@ -79,9 +79,10 @@ class ConfigurationManager:
     
     def get_evaluation_config(self) -> EvaluationConfig:
         eval_config = EvaluationConfig(
+            base_model_path = Path(self.config.prepare_base_model.base_model_path),
             path_of_model= Path(self.config.training.trained_model_path),
-            training_data=Path(self.config.data_transformation.test_data),
-            mlflow_uri=str(self.config.evaluation.mlflow_uri),
+            training_data=Path(self.config.training.test_data_path),
+            mlflow_uri=str(self.config.Evaluation.mlflow_uri),
             all_params=self.params,
             params_batch_size=self.params.BATCH_SIZE,
             params_device="cuda" if torch.cuda.is_available() else "cpu"

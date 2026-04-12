@@ -6,15 +6,13 @@ from torch_geometric.loader import DataLoader
 import mlflow
 from src.GNNClassfier.config.configuration import EvaluationConfig
 from src.GNNClassfier.utils.common import save_json
-
+from GNNClassfier.components.prepare_model import GNN
 
 class Evaluation:
     def __init__(self, config: EvaluationConfig):
         self.config = config
         self.device = torch.device(self.config.params_device)
         self.score = None
-        
-
 
     def _load_test_data(self):
         # Loading the .pt file containing the Test Dataset (PyG format)
@@ -37,7 +35,7 @@ class Evaluation:
         # 2. Load Data
         train_data = load_graphs_from_dir(self.config.training_data_path)
         
-        self.test_dataset = torch.load(self.config.training_data, weights_only = False)
+        self.test_dataset = torch.load(train_data, weights_only = False)
         self.test_loader = DataLoader(
             self.test_dataset, 
             batch_size=self.config.params_batch_size, 
@@ -46,7 +44,11 @@ class Evaluation:
 
     def evaluation(self):
         # Load the PyTorch GNN model
-        self.model = torch.load(self.config.path_of_model, weights_only = False)
+        
+        self.model = torch.load(self.config.base_model_path, weights_only=False)
+        state_dict = torch.load(self.config.path_of_model)
+        self.model.load_state_dict(state_dict)
+        # 3. Now you can move it to the device
         self.model.to(self.device)
         self.model.eval()
         

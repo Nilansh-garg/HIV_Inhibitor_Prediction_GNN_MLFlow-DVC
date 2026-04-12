@@ -48,6 +48,7 @@ class TrainingConfig:
 
 @dataclass(frozen=True)
 class EvaluationConfig:
+    base_model_path: Path
     path_of_model: Path
     training_data: Path  # Path to your processed dataset
     all_params: dict
