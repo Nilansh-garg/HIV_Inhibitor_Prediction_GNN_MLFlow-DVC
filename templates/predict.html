@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Predict — MolPredict</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/predict.css" />
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <div class="dot"></div>
+      Mol<span>Predict</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/predict">Predict</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/predict" class="nav-cta">Run Model →</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page">
+    <div class="predict-layout">
+
+      <!-- LEFT PANEL -->
+      <div class="predict-left">
+        <div class="predict-header animate-up delay-1">
+          <p class="section-label">Prediction Lab</p>
+          <h1 class="section-title">Molecular Activity<br /><span class="accent-text">Analyzer</span></h1>
+          <p class="section-sub">Input a valid SMILES string. The GNN will predict whether the molecule is <em>Active</em> or <em>Inactive</em>.</p>
+        </div>
+
+        <div class="input-panel card animate-up delay-2">
+          <label class="input-label">
+            <span class="label-tag">SMILES Input</span>
+            <span class="label-hint">Simplified Molecular-Input Line-Entry System</span>
+          </label>
+          <div class="textarea-wrapper">
+            <textarea
+              id="smiles-input"
+              class="smiles-textarea"
+              placeholder="e.g. CC(=O)Oc1ccccc1C(=O)O"
+              rows="4"
+              spellcheck="false"
+            ></textarea>
+            <button class="clear-btn" id="clear-btn" title="Clear input">✕</button>
+          </div>
+
+          <div class="quick-examples">
+            <span class="quick-label">Quick examples:</span>
+            <button class="ex-btn" data-smi="CC(=O)Oc1ccccc1C(=O)O">Aspirin</button>
+            <button class="ex-btn" data-smi="CN1CCC[C@H]1c2cccnc2">Nicotine</button>
+            <button class="ex-btn" data-smi="c1ccc2c(c1)cc1ccc3cccc4ccc2c1c34">Pyrene</button>
+            <button class="ex-btn" data-smi="O=C(O)c1ccccc1O">Salicylic acid</button>
+          </div>
+
+          <button class="btn btn-primary predict-btn" id="predict-btn">
+            <span class="btn-icon">◎</span>
+            <span id="btn-text">Run Prediction</span>
+          </button>
+        </div>
+
+        <!-- API Reference -->
+        <div class="api-box card animate-up delay-3">
+          <p class="api-title">REST API</p>
+          <pre class="api-code"><span class="kw">POST</span> /api/predict
+Content-Type: application/json
+
+{
+  <span class="str">"smiles"</span>: <span class="str">"CC(=O)Oc1ccccc1C(=O)O"</span>
+}</pre>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="predict-right">
+
+        <!-- Result card -->
+        <div class="result-card card animate-up delay-2" id="result-card">
+          <div class="result-placeholder" id="result-placeholder">
+            <div class="placeholder-icon">⬡</div>
+            <p>Your prediction will appear here</p>
+          </div>
+
+          <div class="result-content" id="result-content" style="display:none;">
+            <div class="result-status-row">
+              <div class="result-badge" id="result-badge">—</div>
+              <div class="result-meta">
+                <span class="result-label">Prediction</span>
+                <span class="result-value" id="result-label-val">—</span>
+              </div>
+            </div>
+
+            <div class="confidence-section">
+              <div class="conf-header">
+                <span>Confidence</span>
+                <span id="conf-pct">—</span>
+              </div>
+              <div class="conf-bar-track">
+                <div class="conf-bar-fill" id="conf-bar"></div>
+              </div>
+            </div>
+
+            <div class="smiles-result-row">
+              <span class="result-field-label">Input SMILES</span>
+              <code class="smiles-result-code" id="result-smiles-out">—</code>
+            </div>
+
+            <div class="prob-breakdown">
+              <div class="prob-row">
+                <span class="prob-label active-label">Active</span>
+                <div class="prob-bar-track">
+                  <div class="prob-bar-fill active-fill" id="prob-active-bar"></div>
+                </div>
+                <span class="prob-val" id="prob-active-val">—</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-label inactive-label">Inactive</span>
+                <div class="prob-bar-track">
+                  <div class="prob-bar-fill inactive-fill" id="prob-inactive-bar"></div>
+                </div>
+                <span class="prob-val" id="prob-inactive-val">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-error" id="result-error" style="display:none;">
+            <div class="error-icon">⚠</div>
+            <p id="error-msg">An error occurred.</p>
+          </div>
+
+          <div class="result-loader" id="result-loader" style="display:none;">
+            <div class="loader-ring"></div>
+            <p>Running GNN inference…</p>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-panel card animate-up delay-4" id="history-panel">
+          <div class="history-header">
+            <span class="history-title">Session History</span>
+            <button class="clear-hist-btn" id="clear-hist-btn">Clear</button>
+          </div>
+          <div class="history-list" id="history-list">
+            <p class="history-empty">No predictions yet.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer class="footer">
+      <a href="/" class="footer-logo">Mol<span>Predict</span></a>
+      <ul class="footer-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+      <p class="footer-copy">© 2025 MolPredict.</p>
+    </footer>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  <script src="/static/js/predict.js"></script>
+</body>
+</html>

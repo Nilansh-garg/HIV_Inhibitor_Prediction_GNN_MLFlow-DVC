@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — MolPredict</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/about.css" />
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <div class="dot"></div>
+      Mol<span>Predict</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/predict">Predict</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/predict" class="nav-cta">Run Model →</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page">
+
+    <!-- PAGE HERO -->
+    <div class="about-hero">
+      <p class="section-label animate-up delay-1">About the Project</p>
+      <h1 class="section-title animate-up delay-2">How MolPredict <br /><span class="grad-text">Actually Works</span></h1>
+      <p class="section-sub animate-up delay-3">
+        An open look at the architecture, feature engineering, and design choices
+        behind a production-grade molecular activity classifier.
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- MODEL SECTION -->
+    <section class="section">
+      <div class="about-grid">
+        <div>
+          <p class="section-label">The Model</p>
+          <h2 class="about-h2">Graph Neural Network <br />Architecture</h2>
+          <p class="about-p">
+            At its core, MolPredict uses a Graph Neural Network (GNN) that treats each molecule
+            as a mathematical graph: atoms are <strong>nodes</strong> and chemical bonds are
+            <strong>edges</strong>. This representation is far richer than traditional fingerprints
+            because the model can learn structural and relational patterns simultaneously.
+          </p>
+          <p class="about-p">
+            The model was trained using PyTorch Geometric and saved as a complete model
+            object — meaning the architecture and weights are bundled together for easy
+            deployment. At inference time, it runs in <code>eval()</code> mode with
+            <code>torch.no_grad()</code> for maximum speed.
+          </p>
+          <div class="pill-row">
+            <span class="tag">PyTorch</span>
+            <span class="tag">PyG</span>
+            <span class="tag">GNN</span>
+            <span class="tag">RDKit</span>
+          </div>
+        </div>
+        <div class="arch-diagram">
+          <div class="arch-node mol">SMILES</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-node parse">RDKit Parse</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-node feat">Node Features<br/><small>6-dimensional</small></div>
+          <div class="arch-row">
+            <div class="arch-arrow-h">→</div>
+            <div class="arch-node adj">Adjacency<br/>Edge Index</div>
+          </div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-node gnn">GNN Forward Pass</div>
+          <div class="arch-arrow">↓</div>
+          <div class="arch-node out">Softmax Output<br/><small>Active / Inactive</small></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FEATURES SECTION -->
+    <section class="section">
+      <p class="section-label">Feature Engineering</p>
+      <h2 class="about-h2">What the Model Sees</h2>
+      <p class="about-p" style="max-width:600px">
+        Each atom is encoded as a 6-dimensional vector. These hand-crafted features
+        capture the chemical identity and environment of every atom in the molecule.
+      </p>
+      <div class="feat-table" data-reveal>
+        <div class="feat-row feat-head">
+          <span>Dimension</span>
+          <span>Feature</span>
+          <span>Description</span>
+          <span>Type</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-dim">0</span>
+          <span class="feat-name">Atomic Number</span>
+          <span class="feat-desc">Identifies the element (H=1, C=6, N=7 …)</span>
+          <span class="tag">Integer</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-dim">1</span>
+          <span class="feat-name">Degree</span>
+          <span class="feat-desc">Number of bonds to neighboring atoms</span>
+          <span class="tag">Integer</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-dim">2</span>
+          <span class="feat-name">Formal Charge</span>
+          <span class="feat-desc">Net charge on the atom (can be negative)</span>
+          <span class="tag">Integer</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-dim">3</span>
+          <span class="feat-name">Hybridization</span>
+          <span class="feat-desc">sp, sp2, sp3 orbital state (cast to int)</span>
+          <span class="tag">Enum→Int</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-dim">4</span>
+          <span class="feat-name">Aromaticity</span>
+          <span class="feat-desc">1 if part of an aromatic ring, else 0</span>
+          <span class="tag">Binary</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-dim">5</span>
+          <span class="feat-name">Total H Count</span>
+          <span class="feat-desc">Explicit + implicit hydrogen atoms attached</span>
+          <span class="tag">Integer</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- PIPELINE SECTION -->
+    <section class="section">
+      <p class="section-label">Inference Pipeline</p>
+      <h2 class="about-h2">From Request to Response</h2>
+      <div class="timeline" data-reveal>
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-content card">
+            <h4>1. HTTP Request</h4>
+            <p>Client POSTs JSON <code>{"smiles": "..."}</code> to <code>/api/predict</code>. Flask validates the payload.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-content card">
+            <h4>2. SMILES Validation</h4>
+            <p>RDKit's <code>Chem.MolFromSmiles()</code> parses the string. Invalid SMILES returns an immediate error response.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-content card">
+            <h4>3. Graph Construction</h4>
+            <p>Node feature matrix <em>X</em> (N×6) and edge index (2×E) are extracted. A batch vector of zeros handles the single-molecule batch.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-content card">
+            <h4>4. Device Transfer</h4>
+            <p>Tensors move to GPU if CUDA is available, otherwise CPU. The model was loaded at startup and stays resident in memory.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-marker"></div>
+          <div class="tl-content card">
+            <h4>5. Forward Pass</h4>
+            <p>GNN runs <code>model(x, edge_index, batch_index)</code> under <code>torch.no_grad()</code>. Argmax gives the class; softmax gives probabilities.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-marker last"></div>
+          <div class="tl-content card">
+            <h4>6. JSON Response</h4>
+            <p>Result: <code>{"smiles", "prediction", "confidence"}</code> is returned to the client in under 15 ms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-banner">
+      <div class="cta-inner">
+        <h2>Try It Yourself</h2>
+        <p>Head to the prediction lab and run your first SMILES through the model.</p>
+        <a href="/predict" class="btn btn-primary">Open Prediction Lab →</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a href="/" class="footer-logo">Mol<span>Predict</span></a>
+      <ul class="footer-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+      <p class="footer-copy">© 2025 MolPredict.</p>
+    </footer>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MolPredict — Molecular Activity Prediction</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/home.css" />
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+  <canvas id="mol-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <div class="dot"></div>
+      Mol<span>Predict</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/predict">Predict</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/predict" class="nav-cta">Run Model →</a></li>
+    </ul>
+    <div class="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-badge animate-up delay-1">
+          <span class="dot-sm"></span>
+          GNN-Powered · Real-Time Inference
+        </div>
+        <h1 class="hero-title animate-up delay-2">
+          Predict Molecular<br /><span class="accent">Activity</span> Instantly
+        </h1>
+        <p class="hero-sub animate-up delay-3">
+          Feed a SMILES string into our Graph Neural Network and get an Active / Inactive
+          prediction with confidence scores — in milliseconds.
+        </p>
+        <div class="hero-actions animate-up delay-4">
+          <a href="/predict" class="btn btn-primary">Start Predicting →</a>
+          <a href="/about" class="btn btn-outline">How It Works</a>
+        </div>
+        <div class="hero-smiles animate-up delay-5">
+          <span class="smiles-label">Example SMILES</span>
+          <code class="smiles-code">CC(=O)Oc1ccccc1C(=O)O</code>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="hex-ring"></div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-item" data-reveal>
+          <span class="stat-num" data-count="97" data-suffix="%">0%</span>
+          <span class="stat-label">Model Accuracy</span>
+        </div>
+        <div class="stat-item" data-reveal>
+          <span class="stat-num" data-count="12" data-suffix="ms">0ms</span>
+          <span class="stat-label">Avg Inference Time</span>
+        </div>
+        <div class="stat-item" data-reveal>
+          <span class="stat-num" data-count="6">0</span>
+          <span class="stat-label">Atom Feature Dims</span>
+        </div>
+        <div class="stat-item" data-reveal>
+          <span class="stat-num" data-count="2">0</span>
+          <span class="stat-label">Output Classes</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- FEATURES -->
+    <section class="section">
+      <p class="section-label">Capabilities</p>
+      <h2 class="section-title">Built for Precision,<br />Designed for Speed</h2>
+      <p class="section-sub">A production-ready pipeline that processes molecular graphs end-to-end with no preprocessing steps needed on your end.</p>
+
+      <div class="features-grid">
+        <div class="feature-card card" data-reveal>
+          <div class="feature-icon">⬡</div>
+          <h3>Graph Neural Network</h3>
+          <p>Atoms are nodes, bonds are edges. Our GNN learns structural patterns beyond traditional fingerprints.</p>
+        </div>
+        <div class="feature-card card" data-reveal>
+          <div class="feature-icon">◎</div>
+          <h3>SMILES Input</h3>
+          <p>Just paste a SMILES string. RDKit handles parsing and converts it to a molecular graph automatically.</p>
+        </div>
+        <div class="feature-card card" data-reveal>
+          <div class="feature-icon">▷</div>
+          <h3>Instant Results</h3>
+          <p>PyTorch GPU/CPU inference returns Active or Inactive classification alongside per-class probabilities.</p>
+        </div>
+        <div class="feature-card card" data-reveal>
+          <div class="feature-icon">◈</div>
+          <h3>6-Dim Atom Features</h3>
+          <p>Atomic number, degree, formal charge, hybridization, aromaticity, and hydrogen count — all encoded.</p>
+        </div>
+        <div class="feature-card card" data-reveal>
+          <div class="feature-icon">⬡</div>
+          <h3>REST API Ready</h3>
+          <p>POST to <code>/api/predict</code> with a JSON body and integrate MolPredict into any pipeline.</p>
+        </div>
+        <div class="feature-card card" data-reveal>
+          <div class="feature-icon">◉</div>
+          <h3>Confidence Scores</h3>
+          <p>Softmax probabilities give you a calibrated confidence measure alongside every prediction.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- HOW IT WORKS -->
+    <section class="section">
+      <p class="section-label">Pipeline</p>
+      <h2 class="section-title">From SMILES to Prediction<br />in Four Steps</h2>
+      <div class="steps">
+        <div class="step" data-reveal>
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h4>Parse SMILES</h4>
+            <p>RDKit converts your SMILES string into an RDKit Mol object, validating chemical structure.</p>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step" data-reveal>
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h4>Build Graph</h4>
+            <p>Node feature matrix and adjacency edge index are extracted and moved to the compute device.</p>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step" data-reveal>
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h4>GNN Forward Pass</h4>
+            <p>The loaded PyTorch model runs a forward pass with the graph data in no-grad evaluation mode.</p>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step" data-reveal>
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <h4>Return Result</h4>
+            <p>argmax gives the class label; softmax gives confidence. Results returned as JSON instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner">
+      <div class="cta-inner">
+        <h2 class="animate-up">Ready to Predict?</h2>
+        <p class="animate-up delay-1">Enter any valid SMILES and let the model do the work.</p>
+        <a href="/predict" class="btn btn-primary animate-up delay-2">Open Prediction Lab →</a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <a href="/" class="footer-logo">Mol<span>Predict</span></a>
+      <ul class="footer-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+      <p class="footer-copy">© 2025 MolPredict. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
