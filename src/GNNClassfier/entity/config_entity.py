@@ -51,6 +51,7 @@ class EvaluationConfig:
     base_model_path: Path
     path_of_model: Path
     training_data: Path  # Path to your processed dataset
+    score_util_path: Path
     all_params: dict
     mlflow_uri: str
     params_batch_size: int

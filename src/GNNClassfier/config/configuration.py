@@ -78,10 +78,15 @@ class ConfigurationManager:
         return training_config
     
     def get_evaluation_config(self) -> EvaluationConfig:
+        config = self.config.Evaluation
+        
+        create_directories([config.root_dir])
+        
         eval_config = EvaluationConfig(
             base_model_path = Path(self.config.prepare_base_model.base_model_path),
             path_of_model= Path(self.config.training.trained_model_path),
             training_data=Path(self.config.training.test_data_path),
+            score_util_path=Path(config.score_util_path),
             mlflow_uri=str(self.config.Evaluation.mlflow_uri),
             all_params=self.params,
             params_batch_size=self.params.BATCH_SIZE,

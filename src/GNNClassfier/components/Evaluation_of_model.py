@@ -33,9 +33,10 @@ class Evaluation:
             return [torch.load(f, weights_only = False) for f in graph_files]
 
         # 2. Load Data
-        train_data = load_graphs_from_dir(self.config.training_data_path)
+# This function returns the list of graphs
+        self.test_dataset = load_graphs_from_dir(self.config.training_data) 
         
-        self.test_dataset = torch.load(train_data, weights_only = False)
+        # Now just pass that list directly to the DataLoader
         self.test_loader = DataLoader(
             self.test_dataset, 
             batch_size=self.config.params_batch_size, 
@@ -54,25 +55,34 @@ class Evaluation:
         
         self._load_test_data()
         
+        criterion = torch.nn.CrossEntropyLoss()
         total_loss = 0
         correct = 0
-        criterion = torch.nn.BCELoss()
 
         with torch.no_grad():
             for data in self.test_loader:
                 data = data.to(self.device)
                 out = self.model(data.x, data.edge_index, data.batch)
-                loss = criterion(out, data.y.float().view(-1, 1))
                 
+                # 1. Calculate Loss
+                # CrossEntropyLoss: out is [Batch, 2], target must be [Batch]
+                loss = criterion(out, data.y.long().view(-1))
                 total_loss += loss.item()
-                pred = (out > 0.5).float()
-                correct += (pred == data.y.view(-1, 1)).sum().item()
+                
+                # 2. Calculate Accuracy
+                pred = out.argmax(dim=1) # Get the index of the max logit
+                correct += (pred == data.y.view(-1)).sum().item()
 
-        self.score = [total_loss / len(self.test_loader), correct / len(self.test_dataset)]
+        # Final Metrics
+        avg_loss = total_loss / len(self.test_loader)
+        accuracy = correct / len(self.test_dataset)
+
+        self.score = [avg_loss, accuracy]
 
     def save_score(self):
+        
         scores = {"loss": self.score[0], "accuracy": self.score[1]}
-        save_json(path=Path("scores.json"), data=scores)
+        save_json(path=Path(self.config.score_util_path), data=scores)
 
     def log_into_mlflow(self):
         mlflow.set_tracking_uri(self.config.mlflow_uri)
