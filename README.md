@@ -26,11 +26,11 @@ Clone the repository
 ### STEP 01- Create a conda environment after opening the repository
 
 ```bash
-conda create -n HIV_Inhibitor python=3.8 -y
+conda create -n cnncls python=3.8 -y
 ```
 
 ```bash
-conda activate HIV_Inhibitor
+conda activate cnncls
 ```
 
 
