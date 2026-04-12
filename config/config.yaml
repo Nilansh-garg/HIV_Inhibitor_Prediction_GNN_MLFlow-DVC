@@ -25,13 +25,13 @@ prepare_base_model:
 
 training:
   root_dir: artifacts/training
-  trained_model_path: artifacts/training/model.pth
+  trained_model_path: artifacts/training/model.pt
   training_data_path: artifacts/data_preparation/train_graphs
   test_data_path: artifacts/data_preparation/test_graphs
 
 Evaluation:
   root_dir: artifacts/evaluation
   mlflow_uri: https://dagshub.com/Nilansh-garg/HIV_Inhibitor_Prediction_GNN_MLFlow-DVC.mlflow
-  
+
 
 

@@ -1,4 +1,4 @@
-EPOCHS: 50
+EPOCHS: 5
 BATCH_SIZE: 32
 LEARNING_RATE: 0.001
 FEATURES_SIZE: 6 # Number of node features in your HIV dataset

@@ -13,10 +13,31 @@ class Evaluation:
         self.config = config
         self.device = torch.device(self.config.params_device)
         self.score = None
+        
+
 
     def _load_test_data(self):
         # Loading the .pt file containing the Test Dataset (PyG format)
-        self.test_dataset = torch.load(self.config.training_data)
+        def load_graphs_from_dir(directory_path):
+            processed_dir = Path(directory_path) / "processed"
+            
+            if not processed_dir.exists():
+                raise FileNotFoundError(f"The directory {processed_dir} does not exist. Check your Stage 03 output.")
+            
+            # Find all .pt files and sort them to maintain consistency
+            graph_files = sorted([str(f) for f in processed_dir.glob("*.pt")])
+            
+            if len(graph_files) == 0:
+                raise ValueError(f"No .pt files found in {processed_dir}")
+                
+            print(f"Loading {len(graph_files)} graphs from {processed_dir}...")
+            
+            return [torch.load(f, weights_only = False) for f in graph_files]
+
+        # 2. Load Data
+        train_data = load_graphs_from_dir(self.config.training_data_path)
+        
+        self.test_dataset = torch.load(self.config.training_data, weights_only = False)
         self.test_loader = DataLoader(
             self.test_dataset, 
             batch_size=self.config.params_batch_size, 
@@ -25,7 +46,7 @@ class Evaluation:
 
     def evaluation(self):
         # Load the PyTorch GNN model
-        self.model = torch.load(self.config.path_of_model)
+        self.model = torch.load(self.config.path_of_model, weights_only = False)
         self.model.to(self.device)
         self.model.eval()
         
