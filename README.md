@@ -26,11 +26,11 @@ Clone the repository
 ### STEP 01- Create a conda environment after opening the repository
 
 ```bash
-conda create -n cnncls python=3.8 -y
+conda create -n HIV_Inhibitor python=3.8 -y
 ```
 
 ```bash
-conda activate cnncls
+conda activate HIV_Inhibitor
 ```
 
 
@@ -56,5 +56,5 @@ open up you local host and port
 1. dvc init
 2. dvc repro
 3. dvc dag
-# chicken-disease-project
+
 
